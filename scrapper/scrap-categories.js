@@ -1,6 +1,4 @@
 const puppeteer = require('puppeteer');
-const fs = require('fs');
-
 
 const getCategories = async (url) => {
   const browser = await puppeteer.launch();
@@ -28,6 +26,8 @@ const getCategories = async (url) => {
   console.log("length", urls.length);
   return urls;
 }
+
+
 
 module.exports = {
   getCategories,

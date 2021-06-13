@@ -4,15 +4,25 @@
   "description": "Scrapper to get all the info in Alkosto",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon index",
+    "start:dev": "cross-env NODE_ENV=development nodemon --inspect",
+    "start": "cross-env NODE_ENV=production node index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "puppeteer": "^10.0.0"
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-request-id": "^1.4.1",
+    "morgan": "^1.10.0",
+    "puppeteer": "^10.0.0",
+    "strip-final-newline": "^2.0.0",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
+    "eslint": "^7.28.0",
     "nodemon": "^2.0.7"
   }
 }
