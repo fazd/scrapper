@@ -32,6 +32,10 @@ const config = {
       direction: 'desc',
     },
   },
+  scrapper: {
+    pageSize: 100,
+    sortValue: 'relevance',
+  },
 };
 
 module.exports = config;
