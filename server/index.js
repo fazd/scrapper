@@ -3,13 +3,12 @@ const requestId = require('express-request-id')();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const logger = require('./config/logger');
-
+const api = require('./api/v1');
 
 const app = express();
 
 app.use(requestId);
 app.use(logger.requests);
-
 
 app.use(
   cors({
@@ -27,6 +26,8 @@ app.get('/', (req, res, next) => {
   });
 });
 
+app.use('/api', api);
+app.use('/api/v1', api);
 
 app.use((req, res, next) => {
   next({
@@ -35,7 +36,6 @@ app.use((req, res, next) => {
     level: 'warn',
   });
 });
-
 
 // error handler
 app.use((err, req, res, next) => {
