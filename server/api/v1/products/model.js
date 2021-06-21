@@ -18,10 +18,6 @@ const fields = {
     required: false,
     trim: true,
   },
-  price: {
-    type: Number,
-    required: true,
-  },
   store: {
     type: String,
     required: true,

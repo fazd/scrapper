@@ -115,24 +115,23 @@ exports.all = async (req, res, next) => {
 exports.saveCategories = async (data, baseUrl) => {
   let idx = 1;
   for (let cat of data) {
+    const parsedUrl = parseUrl(cat.url, baseUrl);
     const doc = {
       name: cat.text,
-      link: parseUrl(cat.url, baseUrl),
+      link: parsedUrl,
       store: 'ALKOSTO',
     };
 
-    // logger.info(`${idx}. Evaluating: ${cat.text}`);
-    // const document = await Model.findOne({ link: cat.url });
-    // if (document) {
-    //   logger.info(`${idx}. Document was found: ${cat.text}`);
-    // } else {
-    //   const category = new Model(doc);
-    //   await category.save();
-    //   logger.info(`${idx}. Document was created: ${cat.text}`);
-    // }
-    const document = await Model.findOneAndUpdate({ link: cat.url }, doc, {
-      upsert: true,
-    });
+    logger.info(`${idx}. Evaluating: ${cat.text}`);
+    const document = await Model.findOne({ link: parsedUrl });
+    if (document) {
+      logger.info(`${idx}. Document was found: ${cat.text}`);
+    } else {
+      const category = new Model(doc);
+      await category.save();
+      logger.info(`${idx}. Document was created: ${cat.text}`);
+    }
+
     idx++;
   }
 };
