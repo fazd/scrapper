@@ -11,6 +11,7 @@ const fields = {
     type: String,
     required: true,
     trim: true,
+    unique: true,
   },
   store: {
     type: String,
@@ -18,9 +19,9 @@ const fields = {
   },
 };
 
-const link = new Schema(fields, { timestamps: true });
+const category = new Schema(fields, { timestamps: true });
 
 module.exports = {
-  Model: mongoose.model('link', link),
+  Model: mongoose.model('category', category),
   fields,
 };

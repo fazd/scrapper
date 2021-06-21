@@ -21,7 +21,7 @@ const getProducts = async (base, _url) => {
     const res = data.getAttribute('data-count');
     return res;
   });
-  console.log(total);
+  logger.info(`Total products in this category: ${total}\n`);
   let evaluated = 0;
   let paging = 1;
   let totalProducts = [];
@@ -45,8 +45,10 @@ const getProducts = async (base, _url) => {
           const productUrl = imageElement.getAttribute('href');
           const productTitle = imageElement.getAttribute('title');
 
-          const price = elementChildren[2].querySelector('.price').innerText;
-
+          let price = elementChildren[2].querySelector('.price').innerText;
+          price = price.substr(1);
+          price = price.replaceAll('.', '');
+          price = parseInt(price);
           results.push({
             productTitle,
             productUrl,
@@ -56,45 +58,14 @@ const getProducts = async (base, _url) => {
         }
       }
       return results;
-
-      // items.forEach((element) => {
-      //   let elementChildren = element.children;
-      //   if (elementChildren[0]) {
-      //     const imageElement = elementChildren[0].children[0];
-      //     const productUrl = imageElement.getAttribute('href');
-      //     const productTitle = imageElement.getAttribute('href');
-      //     results.push({
-      //       productTitle,
-      //       productUrl,
-      //     });
-      //   }
-      // });
-      // return results;
     });
     await newPage.close();
-    paging++;
-    console.log('PRODUCTS', products);
     totalProducts = [...totalProducts, ...products];
+    logger.info(`Page: ${paging} completed\n`);
+    paging++;
   }
-
-  // let urls = await page.evaluate(() => {
-  //   let results = [];
-  //   let items = document.querySelectorAll('div.subcategories--item--label');
-  //   items.forEach((item) => {
-  //     results.push({
-  //       url: item.children[0].getAttribute('href'),
-  //       text: item.children[0].getAttribute('Title'),
-  //     });
-  //   });
-  //   return results;
-  // });
-
   await browser.close();
-  // urls.forEach((el) => {
-  //   console.log(`${el.text} : ${el.url}\n`);
-  // });
-  // console.log('length', urls.length);
-  // return urls;
+
   return totalProducts;
 };
 

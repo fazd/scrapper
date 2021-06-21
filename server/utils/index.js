@@ -64,10 +64,18 @@ const populateToObject = (populateNames, virtuals = {}) => {
   });
 };
 
+const parseUrl = (url, baseUrl) => {
+  if (url.startsWith('https://') || url.startsWith('http')) {
+    return url;
+  }
+  return baseUrl + url;
+};
+
 module.exports = {
   paginationParseParams,
   sortParseParams,
   sortCompactToStr,
   filterByNested,
   populateToObject,
+  parseUrl,
 };

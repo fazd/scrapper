@@ -20,11 +20,12 @@ const config = {
       default: 'createdAt',
       fields: ['createdAt', 'updatedAt'],
     },
+    direction: {
+      default: 'desc',
+      options: ['asc', 'desc'],
+    },
   },
-  direction: {
-    default: 'desc',
-    options: ['asc', 'desc'],
-  },
+
   populate: {
     virtuals: {
       limit: 20,

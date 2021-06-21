@@ -18,8 +18,8 @@ exports.connect = (
   mongoose.connect(dburl, {
     ...options,
     useNewUrlParser: true,
-    userCreateIndex: true,
     useUnifiedTopology: true,
+    useFindAndModify: false,
   });
 
   mongoose.connection.on('open', () => {
