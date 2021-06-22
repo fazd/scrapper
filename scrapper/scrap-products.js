@@ -16,6 +16,8 @@ const getProducts = async (base, _url) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url);
+  page.setDefaultNavigationTimeout(100000);
+
   let total = await page.evaluate(() => {
     const data = document.querySelector('span.js-search-count');
     const res = data?.getAttribute('data-count');
@@ -32,6 +34,8 @@ const getProducts = async (base, _url) => {
     const newUrl = url + params;
     const newPage = await browser.newPage();
     await newPage.goto(newUrl);
+    newPage.setDefaultNavigationTimeout(100000);
+
     let products = await newPage.evaluate(() => {
       let results = [];
       let items = document.querySelectorAll('.product__list--item');

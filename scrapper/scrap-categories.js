@@ -6,6 +6,8 @@ const getCategories = async (url) => {
   const page = await browser.newPage();
   logger.info(`Url: ${url}`);
   await page.goto(url);
+  page.setDefaultNavigationTimeout(100000);
+
   // await page.goto("https://www.alkosto.com/");
   let urls = await page.evaluate(() => {
     let results = [];
