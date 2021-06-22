@@ -20,10 +20,6 @@ const getCategories = async (url) => {
   });
 
   await browser.close();
-  urls.forEach((el) => {
-    console.log(`${el.text} : ${el.url}\n`);
-  });
-  console.log('length', urls.length);
   return urls;
 };
 

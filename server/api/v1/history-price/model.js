@@ -21,7 +21,7 @@ const references = {
   }
 };
 
-const historyPrice = new Schema(Object.assign(fields, references) {
+const historyPrice = new Schema(Object.assign(fields, references), {
   timestamps: true,
 });
 

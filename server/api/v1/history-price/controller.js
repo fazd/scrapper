@@ -1,5 +1,5 @@
-
 const { Model, fields, references } = require('./model');
+const dayjs = require('dayjs');
 const {
   paginationParseParams,
   sortParseParams,
@@ -45,6 +45,22 @@ exports.create = async (req, res, next) => {
     next(new Error(error));
   }
 };
+
+
+exports.createRecord = async (data) => {
+  if (!data.date) {
+    data.date = dayjs(Date.now());
+  }
+  const document = new Model(data);
+
+  try {
+    const doc = await document.save();
+    return doc;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 exports.all = async (req, res, next) => {
   const { query } = req;
@@ -119,3 +135,4 @@ exports.delete = async (req, res, next) => {
     next(new Error(error));
   }
 };
+

@@ -122,16 +122,14 @@ exports.saveCategories = async (data, baseUrl) => {
       store: 'ALKOSTO',
     };
 
-    logger.info(`${idx}. Evaluating: ${cat.text}`);
     const document = await Model.findOne({ link: parsedUrl });
     if (document) {
-      logger.info(`${idx}. Document was found: ${cat.text}`);
+      logger.info(`${idx}. Document found: ${cat.text}`);
     } else {
       const category = new Model(doc);
       await category.save();
-      logger.info(`${idx}. Document was created: ${cat.text}`);
+      logger.info(`${idx}. Document created: ${cat.text}`);
     }
-
     idx++;
   }
 };

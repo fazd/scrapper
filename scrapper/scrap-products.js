@@ -16,11 +16,12 @@ const getProducts = async (base, _url) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url);
-  const total = await page.evaluate(() => {
+  let total = await page.evaluate(() => {
     const data = document.querySelector('span.js-search-count');
-    const res = data.getAttribute('data-count');
+    const res = data?.getAttribute('data-count');
     return res;
   });
+  total = total ? total : 0;
   logger.info(`Total products in this category: ${total}\n`);
   let evaluated = 0;
   let paging = 1;
@@ -39,13 +40,13 @@ const getProducts = async (base, _url) => {
         if (elementChildren[0] && elementChildren[2]) {
           const imageUrl = elementChildren[0]
             ?.querySelectorAll('.js-product-click-datalayer')[2]
-            ?.children[0].getAttribute('data-src');
+            ?.children[0]?.getAttribute('data-src');
 
-          const imageElement = elementChildren[0].children[0];
-          const productUrl = imageElement.getAttribute('href');
-          const productTitle = imageElement.getAttribute('title');
+          const imageElement = elementChildren[0]?.children[0];
+          const productUrl = imageElement?.getAttribute('href');
+          const productTitle = imageElement?.getAttribute('title');
 
-          let price = elementChildren[2].querySelector('.price').innerText;
+          let price = elementChildren[2]?.querySelector('.price')?.innerText;
           price = price.substr(1);
           price = price.replaceAll('.', '');
           price = parseInt(price);

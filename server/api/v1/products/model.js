@@ -18,10 +18,6 @@ const fields = {
     required: false,
     trim: true,
   },
-  store: {
-    type: String,
-    required: true,
-  },
 };
 
 const product = new Schema(fields, { timestamps: true });

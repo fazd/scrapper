@@ -65,10 +65,13 @@ const populateToObject = (populateNames, virtuals = {}) => {
 };
 
 const parseUrl = (url, baseUrl) => {
-  if (url.startsWith('https://') || url.startsWith('http')) {
-    return url;
+  if (url) {
+    if (url.startsWith('https://') || url.startsWith('http')) {
+      return url;
+    }
+    return baseUrl + url;
   }
-  return baseUrl + url;
+  return ''
 };
 
 module.exports = {
