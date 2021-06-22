@@ -43,7 +43,7 @@ exports.scrapAllData = async (req, res, next) => {
     await saveCategories(data, url);
     logger.info(`Step 1. Scrap categories [OK]`);
   } catch (error) {
-    logger.info(`Step 1. Scrap categories [Failed]`);
+    logger.error(`Step 1. Scrap categories [Failed]`);
     next(new Error(error));
   }
   logger.info(`Step 2. Get all categories from the database []`);
@@ -78,7 +78,7 @@ exports.scrapAllData = async (req, res, next) => {
 
     res.send({ success: true });
   } catch (error) {
-    logger.info(`Step 2. Get all categories from the database [Failed]`);
+    logger.error(`Step 2. Get all categories from the database [Failed]`);
     next(new Error(error));
   }
 

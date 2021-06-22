@@ -4,7 +4,7 @@ const logger = require('../server/config/logger');
 const getCategories = async (url) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  logger.info(`Url: ${url}`);
+  logger.info(`[Url]: ${url}`);
   await page.goto(url);
   page.setDefaultNavigationTimeout(100000);
 

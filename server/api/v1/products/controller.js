@@ -126,7 +126,7 @@ exports.saveProducts = async (data, baseUrl) => {
     };
     const document = await Model.findOne({ link: parsedUrl });
     if (document) {
-      logger.info(`${idx}. Document found: ${pr.productTitle}`);
+      logger.debug(`${idx}. Document found: ${pr.productTitle}`);
       const record = await createRecord({
         productId: document.id,
         price: pr.price
@@ -140,9 +140,8 @@ exports.saveProducts = async (data, baseUrl) => {
         productId: saveProduct.id,
         price: pr.price,
       });
-      logger.info(`${idx}. Record created: ${pr.productTitle} : ${record.price}`);
-
       logger.info(`${idx}. Document created: ${pr.productTitle}`);
+      logger.info(`${idx}. Record created: ${pr.productTitle} : ${record.price}`);
     }
     idx++;
   }

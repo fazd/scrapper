@@ -106,6 +106,7 @@ exports.read = async (req, res, next) => {
   });
 };
 
+
 exports.update = async (req, res, next) => {
   const { doc = {}, body = {} } = req;
 

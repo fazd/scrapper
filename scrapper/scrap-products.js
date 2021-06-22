@@ -11,7 +11,7 @@ const getProducts = async (base, _url) => {
   } else {
     url = base + _url;
   }
-  logger.info(`Url: ${url}`);
+  logger.debug(`[Url]: ${url}`);
 
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -24,7 +24,12 @@ const getProducts = async (base, _url) => {
     return res;
   });
   total = total ? total : 0;
-  logger.info(`Total products in this category: ${total}\n`);
+  if (total === 0) {
+    logger.warn(`Total products in this category: ${total}`);
+  }
+  else {
+    logger.debug(`Total products in this category: ${total}`);
+  }
   let evaluated = 0;
   let paging = 1;
   let totalProducts = [];
@@ -66,7 +71,7 @@ const getProducts = async (base, _url) => {
     });
     await newPage.close();
     totalProducts = [...totalProducts, ...products];
-    logger.info(`Page: ${paging} completed\n`);
+    logger.info(`Page: ${paging} completed`);
     paging++;
   }
   await browser.close();

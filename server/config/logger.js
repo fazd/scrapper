@@ -1,10 +1,13 @@
-const {createLogger, format, transports } = require('winston');
+const { createLogger, format, transports } = require('winston');
 
 const morgan = require('morgan');
 const stripFinalNewLine = require('strip-final-newline');
 
 const logger = createLogger({
-  format: format.simple(),
+  format: format.combine(
+    format.simple(),
+    format.colorize({ all: true })
+  ),
   transports: [new transports.Console()],
 });
 
@@ -17,7 +20,10 @@ const requests = morgan(requestFormat, {
     write: (message) => {
       // Remove all line breaks
       const log = stripFinalNewLine(message);
-      return logger.info(log);
+      const status = log.substr(log.length - 3);
+      if (!status.startsWith('4') && !status.startsWith('5')) {
+        return logger.info(log);
+      }
     },
   },
 });

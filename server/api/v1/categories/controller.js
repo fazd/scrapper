@@ -124,7 +124,7 @@ exports.saveCategories = async (data, baseUrl) => {
 
     const document = await Model.findOne({ link: parsedUrl });
     if (document) {
-      logger.info(`${idx}. Document found: ${cat.text}`);
+      logger.debug(`${idx}. Document found: ${cat.text}`);
     } else {
       const category = new Model(doc);
       await category.save();
