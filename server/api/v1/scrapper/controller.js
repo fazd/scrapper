@@ -67,9 +67,13 @@ exports.scrapAllData = async (req, res, next) => {
       for await (let doc of docData) {
         //console.log("docData:", doc.name);
         logger.info(`Processing Category: ${doc.name} []`);
-        const products = await getProducts(url, doc.link);
-        await saveProducts(products, url);
-        logger.info(`Processing Category: ${doc.name} [OK]`);
+        try {
+          const products = await getProducts(url, doc.link);
+          await saveProducts(products, url);
+          logger.info(`Processing Category: ${doc.name} [OK]`);
+        } catch (error) {
+          logger.error(`Processing Category: ${doc.name} [FAILED]`);
+        }
       }
       logger.info(`Step 2.${page} Processing page: ${page} [OK]`);
       page++;

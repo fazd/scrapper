@@ -6,6 +6,8 @@ const {
   sortCompactToStr,
   populateToObject,
 } = require('../../../utils');
+const { Model: Product } = require('../products/model');
+
 
 const referencesNames = Object.getOwnPropertyNames(references);
 
@@ -20,6 +22,28 @@ exports.id = async (req, res, next, id) => {
         message,
         statusCode: 404,
         level: 'warn',
+      });
+    } else {
+      req.doc = doc;
+      next();
+    }
+  } catch (error) {
+    next(new Error(error));
+  }
+};
+
+exports.parentId = async (req, res, next) => {
+  const populate = referencesNames.join(' ');
+  const { productUrl } = req.body;
+  console.log("Llega", productUrl);
+  try {
+    const doc = await Product.findOne({ link: productUrl }).populate(populate).exec();
+    if (!doc) {
+      const message = `${Model.modelName} not found`;
+      next({
+        message,
+        statusCode: 404,
+        level: 'warn'
       });
     } else {
       req.doc = doc;
@@ -63,17 +87,23 @@ exports.createRecord = async (data) => {
 
 
 exports.all = async (req, res, next) => {
-  const { query } = req;
+  const { query, params = {}, doc = {} } = req;
+
   const { limit, page, skip } = paginationParseParams(query);
   const { sortBy, direction } = sortParseParams(query, fields);
-  const populate = populateToObject(referencesNames, virtuals);
-
-  const all = Model.find({})
+  const populate = populateToObject(referencesNames,);
+  const { id } = doc;
+  const filter = {}
+  console.log("entra", doc);
+  console.log("entra", id);
+  if (id) {
+    filter.productId = id;
+  }
+  const all = Model.find(filter)
     .sort(sortCompactToStr(sortBy, direction))
     .skip(skip)
     .limit(limit)
-    .populate(populate);
-  const count = Model.countDocuments();
+  const count = Model.countDocuments(filter);
 
   try {
     const data = await Promise.all([all.exec(), count.exec()]);
@@ -136,4 +166,3 @@ exports.delete = async (req, res, next) => {
     next(new Error(error));
   }
 };
-

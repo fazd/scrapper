@@ -131,7 +131,7 @@ exports.saveProducts = async (data, baseUrl) => {
         productId: document.id,
         price: pr.price
       });
-      logger.info(`${idx}. Record created: ${pr.productTitle} : ${record.price}`);
+      logger.debug(`${idx}. Record created: ${pr.productTitle} : ${record.price}`);
 
     } else {
       const product = new Model(doc);
@@ -140,8 +140,8 @@ exports.saveProducts = async (data, baseUrl) => {
         productId: saveProduct.id,
         price: pr.price,
       });
-      logger.info(`${idx}. Document created: ${pr.productTitle}`);
-      logger.info(`${idx}. Record created: ${pr.productTitle} : ${record.price}`);
+      logger.debug(`${idx}. Document created: ${pr.productTitle}`);
+      logger.debug(`${idx}. Record created: ${pr.productTitle} : ${record.price}`);
     }
     idx++;
   }
