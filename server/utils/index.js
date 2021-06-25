@@ -64,14 +64,33 @@ const populateToObject = (populateNames, virtuals = {}) => {
   });
 };
 
+const normalizeUrl = (url) => {
+  let normalize = '';
+  if (url.startsWith('https://www.')) {
+    normalize = url;
+  } else if (url.startsWith('http://www.')) {
+    normalize = 'https' + url.substr(4);
+  } else if (url.startsWith('https://')) {
+    normalize = 'https://www.' + url.substr(8);
+  } else if (url.startsWith('http://')) {
+    normalize = 'https://www.' + url.substr(7);
+  } else {
+    normalize = 'https://www.' + url;
+  }
+  return normalize;
+}
+
+
 const parseUrl = (url, baseUrl) => {
+  let result = '';
   if (url) {
     if (url.startsWith('https://') || url.startsWith('http')) {
-      return url;
+      result = url;
     }
-    return baseUrl + url;
+    result = baseUrl + url;
   }
-  return ''
+  result = normalizeUrl(result);
+  return result;
 };
 
 module.exports = {

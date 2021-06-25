@@ -6,9 +6,9 @@ const controller = require('./controller');
 router.param('id', controller.id);
 
 router.route('/')
-  .get(controller.parentId, controller.all)
-  .post(controller.parentId, controller.create);
+  .post(controller.parentId, controller.all)
 
+router.route('/create').post(controller.parentId, controller.create);
 
 router.route('/:id')
   .get(controller.id, controller.parentId, controller.read)

@@ -35,7 +35,7 @@ exports.scrapProducts = async (req, res, next) => {
 
 exports.scrapAllData = async (req, res, next) => {
   const { body = {} } = req;
-  const { url = 'https://alkosto.com' } = body;
+  const { url = 'https://www.alkosto.com' } = body;
   logger.info('Starting Scrap of all data....');
   logger.info(`Step 1. Scrap categories []`);
   try {

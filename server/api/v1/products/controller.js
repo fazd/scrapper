@@ -146,3 +146,12 @@ exports.saveProducts = async (data, baseUrl) => {
     idx++;
   }
 };
+
+
+exports.remove = async (req, res, next) => {
+  const documents = await Model.deleteMany({ link: { $regex: "https://alkosto.com*" } }).exec();
+  res.json({
+    data: documents,
+    status: 'good'
+  });
+}

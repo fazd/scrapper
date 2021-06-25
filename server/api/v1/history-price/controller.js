@@ -94,8 +94,6 @@ exports.all = async (req, res, next) => {
   const populate = populateToObject(referencesNames,);
   const { id } = doc;
   const filter = {}
-  console.log("entra", doc);
-  console.log("entra", id);
   if (id) {
     filter.productId = id;
   }
@@ -112,6 +110,7 @@ exports.all = async (req, res, next) => {
     res.json({
       sucess: true,
       data: docs,
+      product: doc,
       meta: {
         limit,
         skip,
