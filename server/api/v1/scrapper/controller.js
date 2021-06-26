@@ -33,8 +33,7 @@ exports.scrapProducts = async (req, res, next) => {
 };
 
 exports.scrapAllData = async (req, res, next) => {
-  const { body = {} } = req;
-  const { url = 'https://www.alkosto.com' } = body;
+  const url = 'https://www.alkosto.com';
   logger.info('Starting Scrap of all data....');
   logger.info(`Step 1. Scrap categories []`);
   try {
@@ -97,6 +96,7 @@ exports.scrapAllData = async (req, res, next) => {
       }
       _try++;
     }
+    logger.info(`Retrying Categories [OK]`);
 
     while (retryCategories.length > 0) {
       const doc = retryCategories.shift();
@@ -105,7 +105,7 @@ exports.scrapAllData = async (req, res, next) => {
 
     logger.info(`Step 2. All prices are stored [OK]`);
 
-    res.send({ success: true });
+    res?.send({ success: true });
   } catch (error) {
     logger.error(`Step 2. Get all categories from the database [Failed]`);
     next(new Error(error));

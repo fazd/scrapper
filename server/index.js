@@ -2,8 +2,10 @@ const express = require('express');
 const requestId = require('express-request-id')();
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const cron = require('node-cron');
 const logger = require('./config/logger');
 const api = require('./api/v1');
+const { scrapAllData } = require('./api/v1/scrapper/controller');
 
 const app = express();
 
@@ -28,6 +30,17 @@ app.get('/', (req, res, next) => {
 
 app.use('/api', api);
 app.use('/api/v1', api);
+
+cron.schedule(
+  '* 19 * * *',
+  () => {
+    scrapAllData({});
+  },
+  {
+    scheduled: true,
+    timezone: 'America/Bogota',
+  }
+);
 
 app.use((req, res, next) => {
   next({
