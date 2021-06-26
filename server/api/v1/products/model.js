@@ -18,6 +18,14 @@ const fields = {
     required: false,
     trim: true,
   },
+  minimunPrice: {
+    type: Number,
+    required: true,
+  },
+  maximunPrice: {
+    type: Number,
+    required: true,
+  },
 };
 
 const product = new Schema(fields, { timestamps: true });

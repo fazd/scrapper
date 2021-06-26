@@ -123,16 +123,33 @@ exports.saveProducts = async (data, baseUrl) => {
       name: pr.productTitle,
       link: parsedUrl,
       imageUrl: parseUrl(pr.imageUrl, baseUrl),
+      minimunPrice: pr.price,
+      maximunPrice: pr.price,
     };
     const document = await Model.findOne({ link: parsedUrl });
     if (document) {
       logger.debug(`${idx}. Document found: ${pr.productTitle}`);
       const record = await createRecord({
         productId: document.id,
-        price: pr.price
+        price: pr.price,
       });
-      logger.debug(`${idx}. Record created: ${pr.productTitle} : ${record.price}`);
-
+      logger.debug(
+        `${idx}. Record created: ${pr.productTitle} : ${record.price}`
+      );
+      if (document.minimunPrice < pr.price) {
+        document.minimunPrice = pr.price;
+        await document.save();
+        logger.debug(
+          `${idx}. Minimun price updated: ${pr.productTitle} : ${record.price}`
+        );
+      }
+      if (document.maximunPrice > pr.price) {
+        document.maximunPrice = pr.price;
+        await document.save();
+        logger.debug(
+          `${idx}. Maximun price updated: ${pr.productTitle} : ${record.price}`
+        );
+      }
     } else {
       const product = new Model(doc);
       const saveProduct = await product.save();
@@ -141,17 +158,20 @@ exports.saveProducts = async (data, baseUrl) => {
         price: pr.price,
       });
       logger.debug(`${idx}. Document created: ${pr.productTitle}`);
-      logger.debug(`${idx}. Record created: ${pr.productTitle} : ${record.price}`);
+      logger.debug(
+        `${idx}. Record created: ${pr.productTitle} : ${record.price}`
+      );
     }
     idx++;
   }
 };
 
-
 exports.remove = async (req, res, next) => {
-  const documents = await Model.deleteMany({ link: { $regex: "https://alkosto.com*" } }).exec();
+  const documents = await Model.deleteMany({
+    link: { $regex: 'https://alkosto.com*' },
+  }).exec();
   res.json({
     data: documents,
-    status: 'good'
+    status: 'good',
   });
-}
+};

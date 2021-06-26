@@ -3,9 +3,9 @@ const { getProducts } = require('../../../../scrapper/scrap-products');
 const { saveCategories } = require('../categories/controller');
 const { saveProducts } = require('../products/controller');
 const { Model } = require('../categories/model');
-// const { Model: Product } = require('../products/model');
 const logger = require('../../../config/logger');
 const { paginationParseParams, sortCompactToStr } = require('../../../utils');
+const queue = require('queue');
 
 exports.scrapCategories = async (req, res, next) => {
   const { body = {} } = req;
@@ -32,7 +32,6 @@ exports.scrapProducts = async (req, res, next) => {
   });
 };
 
-
 exports.scrapAllData = async (req, res, next) => {
   const { body = {} } = req;
   const { url = 'https://www.alkosto.com' } = body;
@@ -54,9 +53,13 @@ exports.scrapAllData = async (req, res, next) => {
     const pages = Math.ceil(totalDocs / defaultLimit);
     let page = 1;
     logger.info(`Step 2.0 There are ${pages} pages in the database...`);
+    const retryCategories = queue();
     do {
       logger.info(`Step 2.${page} Processing page: ${page} []`);
-      const { limit, skip } = paginationParseParams({ page, limit: defaultLimit })
+      const { limit, skip } = paginationParseParams({
+        page,
+        limit: defaultLimit,
+      });
 
       const docData = await Model.find({})
         .sort(sortCompactToStr())
@@ -72,12 +75,34 @@ exports.scrapAllData = async (req, res, next) => {
           await saveProducts(products, url);
           logger.info(`Processing Category: ${doc.name} [OK]`);
         } catch (error) {
+          retryCategories.push(doc);
           logger.error(`Processing Category: ${doc.name} [FAILED]`);
         }
       }
       logger.info(`Step 2.${page} Processing page: ${page} [OK]`);
       page++;
     } while (pages >= page);
+
+    let _try = 0;
+    logger.info(`Retrying Categories []`);
+    while (_try < 2 && retryCategories.length > 0) {
+      const doc = retryCategories.shift();
+      try {
+        logger.info(`Processing Category: ${doc.name} []`);
+        const products = await getProducts(url, doc.link);
+        await saveProducts(products, url);
+      } catch (error) {
+        logger.error(`Processing Category: ${doc.name} [FAILED]`);
+        retryCategories.push(doc);
+      }
+      _try++;
+    }
+
+    while (retryCategories.length > 0) {
+      const doc = retryCategories.shift();
+      logger.error(`ERROR Processing Category: ${doc.name}`);
+    }
+
     logger.info(`Step 2. All prices are stored [OK]`);
 
     res.send({ success: true });
@@ -85,9 +110,4 @@ exports.scrapAllData = async (req, res, next) => {
     logger.error(`Step 2. Get all categories from the database [Failed]`);
     next(new Error(error));
   }
-
-
-
-
-
-}
+};
