@@ -32,7 +32,7 @@ app.use('/api', api);
 app.use('/api/v1', api);
 
 cron.schedule(
-  '* 19 * * *',
+  '0 19 * * *',
   () => {
     scrapAllData({});
   },

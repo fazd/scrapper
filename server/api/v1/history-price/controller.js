@@ -1,5 +1,7 @@
 const { Model, fields, references } = require('./model');
 const dayjs = require('dayjs');
+const ObjectID = require('mongodb').ObjectID;
+
 const {
   paginationParseParams,
   sortParseParams,
@@ -7,7 +9,6 @@ const {
   populateToObject,
 } = require('../../../utils');
 const { Model: Product } = require('../products/model');
-
 
 const referencesNames = Object.getOwnPropertyNames(references);
 
@@ -35,15 +36,17 @@ exports.id = async (req, res, next, id) => {
 exports.parentId = async (req, res, next) => {
   const populate = referencesNames.join(' ');
   const { productUrl } = req.body;
-  console.log("Llega", productUrl);
+  console.log('Llega', productUrl);
   try {
-    const doc = await Product.findOne({ link: productUrl }).populate(populate).exec();
+    const doc = await Product.findOne({ link: productUrl })
+      .populate(populate)
+      .exec();
     if (!doc) {
       const message = `${Model.modelName} not found`;
       next({
         message,
         statusCode: 404,
-        level: 'warn'
+        level: 'warn',
       });
     } else {
       req.doc = doc;
@@ -70,7 +73,6 @@ exports.create = async (req, res, next) => {
   }
 };
 
-
 exports.createRecord = async (data) => {
   if (!data.date) {
     data.date = dayjs(Date.now());
@@ -85,22 +87,21 @@ exports.createRecord = async (data) => {
   }
 };
 
-
 exports.all = async (req, res, next) => {
   const { query, params = {}, doc = {} } = req;
 
   const { limit, page, skip } = paginationParseParams(query);
   const { sortBy, direction } = sortParseParams(query, fields);
-  const populate = populateToObject(referencesNames,);
+  const populate = populateToObject(referencesNames);
   const { id } = doc;
-  const filter = {}
+  const filter = {};
   if (id) {
     filter.productId = id;
   }
   const all = Model.find(filter)
     .sort(sortCompactToStr(sortBy, direction))
     .skip(skip)
-    .limit(limit)
+    .limit(limit);
   const count = Model.countDocuments(filter);
 
   try {
@@ -135,7 +136,6 @@ exports.read = async (req, res, next) => {
   });
 };
 
-
 exports.update = async (req, res, next) => {
   const { doc = {}, body = {} } = req;
 
@@ -160,6 +160,34 @@ exports.delete = async (req, res, next) => {
     res.json({
       sucess: true,
       data: removed,
+    });
+  } catch (error) {
+    next(new Error(error));
+  }
+};
+
+exports.getAvg = async (req, res, next) => {
+  const { doc = {} } = req;
+  console.log(doc);
+  try {
+    const aggr = await Model.aggregate([
+      {
+        $match: {
+          productId: new ObjectID(`${doc.id}`),
+        },
+      },
+      {
+        $group: {
+          _id: '$productId',
+          avg: {
+            $avg: '$price',
+          },
+        },
+      },
+    ]);
+    res.json({
+      sucess: true,
+      data: aggr,
     });
   } catch (error) {
     next(new Error(error));
